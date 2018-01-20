@@ -50,11 +50,11 @@ class MovieRatingScript
     def parse_duration(duration)
       hours = extract_value duration, HOURS_REGEX, :hours
       minutes =  extract_value duration, MINUTES_REGEX, :mins
-      (hours || 0) * 60 + (minutes || 0)
+      hours * 60 + minutes
     end
 
     def extract_value(string, regex, key)
-      regex.match(string).try(:[], key).try(:to_i)
+      regex.match(string).try(:[], key).try(:to_i) || 0
     end
 
     def parse_availability(availabilities)
