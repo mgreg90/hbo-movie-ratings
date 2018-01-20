@@ -28,12 +28,18 @@ class MovieRatingScript
       release_date.try :year
     end
 
-    def to_s
-      "#{title} (#{year})"
+    def to_s(format=:default)
+      case format
+      when :default
+        "#{title} (#{year})"
+      when :pretty
+        rating = rotten_tomatoes_rating || 'unrated'
+        printf("%-60s %-75s %s", self, cast(:string), rating)
+      end
     end
 
     def print_rating
-      puts "#{self} starring #{cast(:string)} - #{rotten_tomatoes_rating || 'unrated'}"
+      puts to_s(:pretty)
     end
 
     def cast(format=:default)

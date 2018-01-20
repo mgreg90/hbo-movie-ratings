@@ -28,7 +28,16 @@ class MovieRatingScript
     end
 
     def print_ratings
-      puts "=" * 50
+      width = `tput cols`.strip.to_i
+      puts "Done!"
+      sleep 1
+      system "clear"
+      title = "M o v i e s"
+      spaces_count = (width / 2) - title.length
+      print " " * spaces_count
+      puts "#{title}\n\n"
+      puts printf("%-60s %-75s %s", 'Title', 'Cast', 'Tomatometer')
+      puts("=" * width)
       map(&:print_rating)
     end
 
