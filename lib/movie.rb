@@ -36,6 +36,7 @@ class MovieRatingScript
         rating = rotten_tomatoes_rating || 'unrated'
         printf("%-60s %-75s %s", self, cast(:string), rating)
       end
+    rescue Errno::EPIPE
     end
 
     def print_rating

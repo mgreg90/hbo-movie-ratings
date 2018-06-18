@@ -36,7 +36,7 @@ class MovieRatingScript
     puts "Fetching ratings from Rotten Tomatoes..."
     rate(movies)
 
-    movies.print_ratings
+    movies.sort_by_tomato_rating.print_ratings
   end
 
   def movies
@@ -44,7 +44,7 @@ class MovieRatingScript
   end
 
   def rate(movies)
-    rating_source.rate(movies).sort_by_tomato_rating
+    rating_source.rate(movies)
   end
 end
 

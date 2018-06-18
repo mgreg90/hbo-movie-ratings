@@ -2,9 +2,10 @@ class MovieRatingScript
   module RatingSource
     class RottenTomatoes
 
-      attr_reader :movies
+      attr_reader :movies, :rated_movies
 
       BASE_URL = "https://www.rottentomatoes.com/api/private/v2.0/search/?limit=2&q="
+      THREAD_COUNT = 30
 
       def self.rate(movies)
         new(movies).rate
@@ -15,11 +16,36 @@ class MovieRatingScript
           raise TypeError, "#{movies} is not an instance of MovieCollection"
         end
         @movies = movies
+        @rated_movies = MovieCollection.new
+        @result_movies = Queue.new
+      end
+
+      def movie_queue
+        @queue ||= begin
+          q = Queue.new
+          movies.each { |movie| q << movie }
+          q
+        end
       end
 
       def rate
-        movies.
-          map! { |movie| rate_one(movie) }
+        threads = THREAD_COUNT.times.map do |n|
+          Thread.new do
+            while movie_queue.size > 0
+              movie = movie_queue.pop
+              @result_movies << rate_one(movie)
+            end
+          end
+        end
+        threads.each(&:join)
+        thr = Thread.new do
+          while @result_movies.size < @rated_movies.size
+            movie = @result_movies.pop
+            @rated_movies << movie
+          end
+        end
+        thr.join
+        @rated_movies.sort_by_tomato_rating
       end
 
       def rate_one(movie)
