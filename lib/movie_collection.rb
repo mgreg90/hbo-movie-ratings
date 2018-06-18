@@ -30,8 +30,6 @@ class MovieRatingScript
     def print_ratings
       width = `tput cols`.strip.to_i
       puts "Done!"
-      sleep 1
-      system "clear"
       title = "M o v i e s"
       spaces_count = (width / 2) - title.length
       print " " * spaces_count
